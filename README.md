@@ -6,23 +6,23 @@ Express is bloated and too intricate.
 
 `hapi`, `marko`, `lasso`, and `socket.io` are extremely efficient and powerful.  So `HMLS` just wires all of that up for you so that you can be up and running with a webapp in two shakes of a lamb's tail.
  
- `HMLS` doesn't "dumb it down" or hide things.  The individual components are easily accessed and altered, giving you all of the flexibility that you'd ever need, or at least the same flexibility that you'd have if you wired this together yourself.
+`HMLS` doesn't "dumb it down" or hide things.  The individual components are easily accessed and altered, giving you all of the flexibility that you'd ever need, or at least the same flexibility that you'd have if you wired this together yourself.
  
- ##Installation
+## Installation
  
- `mkdir <project>`
+`mkdir <project>`
  
- `cd <project>`
+`cd <project>`
  
- `npm init`
+`npm init`
  
- `npm install --save hmls`
+`npm install --save hmls`
  
- Then make a few files:
+Then make a few files:
  
- ###routes/intex.js
+### routes/intex.js
  
- ```js
+```js
 'use strict'
 
 module.exports = {
@@ -34,7 +34,7 @@ module.exports = {
 }
 ```
  
- ###index.js
+### index.js
  
  ```js
 'use strict'
@@ -49,6 +49,6 @@ vc.start()
 
 Then `node index.js` and visit http://localhost:8080 to see your home page.
  
- ##Structure and Architecture
+## Structure and Architecture
  
- _coming soon_
+_coming soon_
