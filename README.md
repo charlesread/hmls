@@ -24,6 +24,14 @@ Express is bloated and too intricate.
     + [index.js](#indexjs-1)
     + [pages/slash/index.marko](#pagesslashindexmarko)
     + [routes/slash/index.js](#routesslashindexjs)
+  * [Bundling assets with `lasso`](#bundling-assets-with-lasso)
+    + [index.js](#indexjs-2)
+    + [routes/slash/index.js](#routesslashindexjs-1)
+    + [pages/slash/index.marko](#pagesslashindexmarko-1)
+    + [pages/slash/browser.json](#pagesslashbrowserjson)
+    + [pages/slash/lib1.js](#pagesslashlib1js)
+    + [pages/slash/lib2.js](#pagesslashlib2js)
+    + [pages/slash/style.css](#pagesslashstylecss)
 - [Structure and Architecture](#structure-and-architecture)
   * [Project Structure](#project-structure)
     + [/routes](#routes)
@@ -155,6 +163,133 @@ module.exports = [{
   }
 }]
 ```
+
+### Bundling assets with `lasso`
+
+You can use `lasso`'s manifest file (`browser.json`) and its taglib in `marko` files to bundle assets.
+
+#### index.js
+
+```js
+'use strict'
+
+const HMLS = require('hmls')
+
+const vc = new HMLS()
+
+vc.on('started', () => {
+  console.log('server started at %s', vc.server.info.uri)
+})
+
+vc.init()
+vc.start()
+```
+
+#### routes/slash/index.js
+
+```js
+'use strict'
+
+module.exports = [{
+  method: 'get',
+  path: '/',
+  handler: function (req, reply) {
+    const page = require('~/pages/slash/index.marko')
+    reply(page.stream(
+      {
+        now: new Date()
+      }
+    ))
+  }
+}]
+```
+
+#### pages/slash/index.marko
+
+```html
+<lasso-page package-path="./browser.json"/>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>/</title>
+    <lasso-head/>
+</head>
+<body>
+<h1>
+    The current <code>Date</code> is ${input.now}!
+</h1>
+<lasso-body/>
+</body>
+</html>
+```
+
+#### pages/slash/browser.json
+
+```json
+{
+  "dependencies": [
+    {
+      "type": "js",
+      "url": "//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"
+    },
+    "./lib1.js",
+    "./lib2.js",
+    "./style.css"
+  ]
+}
+```
+
+#### pages/slash/lib1.js
+
+```js
+console.log('from pages/slash/lib1.js');
+```
+
+#### pages/slash/lib2.js
+
+```js
+console.log('from pages/slash/lib2.js');
+```
+
+#### pages/slash/style.css
+
+```css
+body {
+    background-color: #eee;
+}
+
+h1 {
+    color: red;
+}
+```
+
+Now the page source will look something like this:
+
+```html
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <title>/</title>
+      <link rel="stylesheet" href="/static/slash-4c51a8fb.css">
+   </head>
+   <body>
+      <h1>The current <code>Date</code> is Sun May 14 2017 17:31:37 GMT-0400 (EDT)!</h1>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+      <script src="/static/slash-71d36ac2.js"></script>
+   </body>
+</html>
+```
+
+`/static/slash-71d36ac2.js` will look like this:
+
+```js
+console.log('from pages/slash/lib1.js');
+console.log('from pages/slash/lib2.js');
+```
+
+_Notice that the two JS lib files have been combined into one resource, also notice the jQuery injection._
  
 ## Structure and Architecture
  
