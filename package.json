@@ -1,6 +1,6 @@
 {
   "name": "hmls",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Build a node webapp in seconds, wires together hapi, marko, lasso, and socket.io",
   "keywords": [
     "hapi",
