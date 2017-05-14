@@ -2,6 +2,15 @@
   "name": "rambla",
   "version": "1.0.0",
   "description": "Build a node webapp in seconds, wires together hapi, marko, lasso, and socket.io",
+  "keywords": ["hapi", "marko", "lasso", "socket.io", "webapp", "express"],
+  "bugs": {
+    "url": "https://github.com/charlesread/hmls/issues",
+    "email": "charles@charlesread.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/charlesread/hmls"
+  },
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
