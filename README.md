@@ -13,14 +13,15 @@ Express is bloated and too intricate.
 <!-- toc -->
 
 - [Installation](#installation)
-  * [routes/intex.js](#routesintexjs)
   * [index.js](#indexjs)
+  * [routes/index.js](#routesindexjs)
 - [Methods, Attributes, and Options](#methods-attributes-and-options)
   * [`new HMLS([options])`](#new-hmlsoptions)
   * [`hmls.server`](#hmlsserver)
   * [`hmls.lasso`](#hmlslasso)
 - [Examples](#examples)
   * [With a simple `marko` template](#with-a-simple-marko-template)
+    + [index.js](#indexjs-1)
     + [pages/slash/index.marko](#pagesslashindexmarko)
     + [routes/slash/index.js](#routesslashindexjs)
 - [Structure and Architecture](#structure-and-architecture)
@@ -42,21 +43,7 @@ Express is bloated and too intricate.
 `npm install --save hmls`
  
 Then make a few files:
- 
-### routes/intex.js
- 
-```js
-'use strict'
 
-module.exports = {
-  method: 'get',
-  path: '/',
-  handler: function (req, reply) {
-    reply('Welcome to the home page!')
-  }
-}
-```
- 
 ### index.js
  
  ```js
@@ -73,6 +60,22 @@ vc.on('started', () => {
 vc.init()
 vc.start()
 ```
+ 
+### routes/index.js
+ 
+```js
+'use strict'
+
+module.exports = {
+  method: 'get',
+  path: '/',
+  handler: function (req, reply) {
+    reply('Welcome to the home page!')
+  }
+}
+```
+
+Then `node index.js` and visit http://localhost:8080 to see your home page.
 
 ## Methods, Attributes, and Options
 
@@ -109,6 +112,23 @@ The `lasso` instance.
 
 ### With a simple `marko` template
 
+#### index.js
+ 
+ ```js
+'use strict'
+
+const HMLS = require('hmls')
+
+const vc = new HMLS()
+
+vc.on('started', () => {
+  console.log('server started at %s', vc.server.info.uri)
+})
+
+vc.init()
+vc.start()
+```
+
 #### pages/slash/index.marko
 
 ```html
@@ -135,8 +155,6 @@ module.exports = [{
   }
 }]
 ```
-
-Then `node index.js` and visit http://localhost:8080 to see your home page.
  
 ## Structure and Architecture
  
