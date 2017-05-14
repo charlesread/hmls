@@ -1,8 +1,15 @@
 {
   "name": "hmls",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Build a node webapp in seconds, wires together hapi, marko, lasso, and socket.io",
-  "keywords": ["hapi", "marko", "lasso", "socket.io", "webapp", "express"],
+  "keywords": [
+    "hapi",
+    "marko",
+    "lasso",
+    "socket.io",
+    "webapp",
+    "express"
+  ],
   "bugs": {
     "url": "https://github.com/charlesread/hmls/issues",
     "email": "charles@charlesread.com"
