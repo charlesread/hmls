@@ -1,4 +1,4 @@
-# HMLS
+#HMLS
 
 Go from 0 to webapp in seconds.
 
@@ -8,7 +8,7 @@ Express is bloated and too intricate.
  
  `HMLS` doesn't "dumb it down" or hide things.  The individual components are easily accessed and altered, giving you all of the flexibility that you'd ever need, or at least the same flexibility that you'd have if you wired this together yourself.
  
- ## Installation
+ ##Installation
  
  `mkdir <project>`
  
@@ -20,7 +20,7 @@ Express is bloated and too intricate.
  
  Then make a few files:
  
- ### routes/intex.js
+ ###routes/intex.js
  
  ```js
 'use strict'
@@ -34,7 +34,7 @@ module.exports = {
 }
 ```
  
- ### index.js
+ ###index.js
  
  ```js
 'use strict'
@@ -49,6 +49,6 @@ vc.start()
 
 Then `node index.js` and visit http://localhost:8080 to see your home page.
  
- ## Structure and Architecture
+ ##Structure and Architecture
  
  _coming soon_
