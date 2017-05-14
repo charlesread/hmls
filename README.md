@@ -14,6 +14,8 @@ Express is bloated and too intricate.
  
  `cd <project>`
  
+ `npm init`
+ 
  `npm install --save hmls`
  
  Then make a few files:
