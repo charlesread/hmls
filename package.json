@@ -1,0 +1,22 @@
+{
+  "name": "rambla",
+  "version": "1.0.0",
+  "description": "Build a node webapp in seconds, wires together hapi, marko, lasso, and socket.io",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Charles Read",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "deep-assign": "^2.0.0",
+    "hapi": "^16.1.1",
+    "inert": "^4.2.0",
+    "lasso": "^2.11.11",
+    "lasso-marko": "^2.3.0",
+    "marko": "^4.3.0",
+    "node-dir": "^0.1.16",
+    "require-self-ref": "^2.0.1"
+  }
+}
