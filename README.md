@@ -100,13 +100,17 @@ Instantiates a new `hmls` object.  `options` has the following defaults:
   lasso: {
     outputDir: path.join(__dirname, '..', '..', 'static')
   },
-  routesPath: path.join(__dirname, '..', '..', 'routes')
+  routesPath: path.join(__dirname, '..', '..', 'routes'),
+  assetsPath: path.join(__dirname, '..', '..', 'assets'),
+  ioPath: path.join(__dirname, '..', '..', 'io')
 }
 ```
 
 * `server` - this object will be passed _directly_ to `hapi`'s `server.connection()` method.  See https://hapijs.com/api for full options.
 * `lasso` - this object will be passed _directly_ to `lasso`'s `lasso.configure()` method.  `lasso.outpurDir` must be set, at a minimum, this specifies the folder where `lasso` will output bundled resources.  It defaults to `/static`.  `HMLS` will automatically use `inert` to serve this folder.
 * `routesPath` - `HMLS` will search this folder for `hapi` routes. More precisely said, it will add each file's exported object to `hapi`'s route table.  _ALL_ files in this folder must export an object, or an array of objects that are `hapi` routes.
+* `assetsPath` - `HMLS` will serve all files in this folder at `/assets`, useful for static resources like images.
+* `ioPath` - `HMLS` wires up `socket.io`, any file in this folder is expected to export a function with the signature `function(io) {}`, where `io` is the `socket.io` instance.
 
 ### `hmls.server`
 
@@ -115,6 +119,92 @@ The `hapi` server.
 ### `hmls.lasso`
 
 The `lasso` instance.
+
+## socket.io
+
+`socket.io` is all wired up.  To add sockets to `HMLS` add JS files to the `/io` folder (or whichever folder) set with `options.ioPath`.
+
+A trivial file in the `/io` folder:
+
+```js
+'use strict'
+
+module.exports = function (io) {
+  io.on('connection', function(socket) {
+    console.log('%s connected', socket.id)
+  })
+}
+```
+
+Then the view (the `.marko` file) should include the `socket.io` client JS library (simply paste `<script src="/socket.io/socket.io.js"></script>`).
+
+For example:
+
+### pages/slash/index.marko
+
+```html
+<lasso-page package-path="./browser.json"/>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>/</title>
+    <lasso-head/>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+<h1>
+    The current <code>Date</code> is ${input.now}!
+</h1>
+<lasso-body/>
+</body>
+</html>
+```
+
+### io/slash/index.js
+
+```js
+'use strict'
+
+module.exports = function (io) {
+  io.on('connection', function(socket) {
+    console.log('%s connected', socket.id)
+    socket.on('greetingAcknowledgement', function() {
+      console.log('%s acknowledged `greeting`', socket.id)
+    })
+    console.log('sending `greeting` to %s', socket.id)
+    socket.emit('greeting')
+  })
+}
+```
+
+Now you can interact with the server with client JS:
+
+### pages/slash/lib.js
+
+```js
+var socket = io();
+
+socket.on('greeting', function() {
+  console.log('received `greeting` from server');
+  socket.emit('greetingAcknowledgement');
+});
+```
+
+Node console:
+
+```js
+server started at http://localhost:8080
+VwyAfRLa6cSJM3neAAAA connected
+sending `greeting` to VwyAfRLa6cSJM3neAAAA
+VwyAfRLa6cSJM3neAAAA acknowledged `greeting`
+```
+
+Browser console:
+
+```js
+received `greeting` from server
+```
 
 ## Examples
 
@@ -308,6 +398,20 @@ All `HMLS` really does is wire all of these pieces together, while exposing each
 #### /routes
 
 This folder should contain JS files that export `hapi` routes.  By default it is the `routes` folder in your project root.  Change this with `options.routesPath`.
+
+An example of a trivial route file:
+
+```js
+'use strict'
+
+module.exports = [{
+  method: 'get',
+  path: '/',
+  handler: function (req, reply) {
+    reply('I get rendered to the browser!')
+  }
+}]
+```
 
 #### /static
 

@@ -11,7 +11,9 @@ module.exports = {
     lasso: {
       outputDir: path.join(__dirname, '..', '..', 'static')
     },
-    routesPath: path.join(__dirname, '..', '..', 'routes')
+    routesPath: path.join(__dirname, '..', '..', 'routes'),
+    assetsPath: path.join(__dirname, '..', '..', 'assets'),
+    ioPath: path.join(__dirname, '..', '..', 'io')
   },
   errors: {
     options: {

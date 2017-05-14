@@ -28,11 +28,13 @@ HMLS.prototype.init = function () {
   return new Promise((resolve, reject) => {
     try {
       this.server.connection(this._options.server)
+      this.io = require('socket.io')(this.server.listener)
       this.lasso.configure(this._options.lasso)
       this.server.register(require('inert'), (err) => {
         if (err) {
           return reject(err)
         }
+        // serve static folder
         if (this._options.staticPath || this.lasso.defaultConfig.outputDir) {
           this.server.route({
             method: 'GET',
@@ -44,6 +46,7 @@ HMLS.prototype.init = function () {
             }
           })
         }
+        // serve assets folder
         if (this._options.assetsPath) {
           this.server.route({
             method: 'GET',
@@ -56,6 +59,7 @@ HMLS.prototype.init = function () {
           })
         }
       })
+      // if a routes path is specified add all routes
       if (this._options.routesPath) {
         dir.files(this._options.routesPath, (err, files) => {
           if (err) {
@@ -66,6 +70,15 @@ HMLS.prototype.init = function () {
           }
         })
       }
+      // add all socket.io files
+      dir.files(this._options.ioPath, (err, files) => {
+        if (err) {
+          return reject(err)
+        }
+        for (let i = 0; i < files.length; i++) {
+          require(files[i])(this.io)
+        }
+      })
       this.initialized = true
       this.emit('initialized')
       resolve(this)

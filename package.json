@@ -33,6 +33,7 @@
     "lasso-marko": "^2.3.0",
     "marko": "^4.3.0",
     "node-dir": "^0.1.16",
-    "require-self-ref": "^2.0.1"
+    "require-self-ref": "^2.0.1",
+    "socket.io": "^2.0.1"
   }
 }
