@@ -13,7 +13,7 @@ const debug = require('debug')('HMLS')
 
 const config = require('~/config')
 
-function HMLS(options) {
+function HMLS (options) {
   this._options = deepAssign({}, config.options, options)
   if (!this._options.lasso || !this._options.lasso.outputDir) {
     throw config.errors.options.lasso
