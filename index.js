@@ -4,8 +4,6 @@ require('require-self-ref')
 const Promise = require('bluebird')
 const Hapi = require('hapi')
 const dir = require('node-dir')
-require('marko/node-require').install()
-require('marko/compiler').defaultOptions.writeToDisk = false
 const lasso = require('lasso')
 const EventEmitter = require('events')
 const deepAssign = require('deep-assign')
@@ -26,6 +24,8 @@ function HMLS (options) {
 HMLS.prototype = Object.create(EventEmitter.prototype)
 HMLS.prototype.constructor = HMLS
 HMLS.prototype.init = function () {
+  require('marko/node-require').install()
+  require('marko/compiler').defaultOptions.writeToDisk = false
   debug('1 - starting init()')
   return new Promise((resolve, reject) => {
     try {
