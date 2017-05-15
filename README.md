@@ -107,12 +107,13 @@ Instantiates a new `hmls` object.  `options` has the following defaults:
     port: '8080'
   },
   lasso: {
-    outputDir: path.join(__dirname, '..', '..', 'static')
+    outputDir: path.join(__dirname, '..', '..', 'static'),
+    plugins: ['lasso-marko']
   },
   routesPath: path.join(__dirname, '..', '..', 'routes'),
   assetsPath: path.join(__dirname, '..', '..', 'assets'),
   ioPath: path.join(__dirname, '..', '..', 'io')
-}
+ }
 ```
 
 * `server` - this object will be passed _directly_ to `hapi`'s `server.connection()` method.  See https://hapijs.com/api for full options.
