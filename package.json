@@ -20,7 +20,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "standard"
+    "test": "mocha"
   },
   "pre-commit": [
     "test"
@@ -41,9 +41,10 @@
     "socket.io": "^2.0.1"
   },
   "devDependencies": {
-    "pre-commit": "^1.2.2"
-  },
-  "peerDependencies": {
-    "lasso": "^2.11.11"
+    "chai": "^3.5.0",
+    "expect": "^1.20.2",
+    "pre-commit": "^1.2.2",
+    "request": "^2.81.0",
+    "should": "^11.2.1"
   }
 }
