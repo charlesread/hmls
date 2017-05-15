@@ -42,5 +42,8 @@
   },
   "devDependencies": {
     "pre-commit": "^1.2.2"
+  },
+  "peerDependencies": {
+    "lasso": "^2.11.11"
   }
 }
