@@ -9,7 +9,8 @@ module.exports = {
       port: '8080'
     },
     lasso: {
-      outputDir: path.join(__dirname, '..', '..', 'static')
+      outputDir: path.join(__dirname, '..', '..', 'static'),
+      plugins: ['lasso-marko']
     },
     routesPath: path.join(__dirname, '..', '..', 'routes'),
     assetsPath: path.join(__dirname, '..', '..', 'assets'),
