@@ -294,6 +294,8 @@ module.exports = [{
 
 You can use `lasso`'s manifest file (`browser.json`) and its taglib in `marko` files to bundle assets.
 
+**NOTE:** Be aware of issue #1, it has a simple workaround.
+
 #### index.js
 
 ```js
