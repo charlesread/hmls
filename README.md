@@ -17,8 +17,13 @@ Express is bloated and too intricate.
   * [routes/index.js](#routesindexjs)
 - [Methods, Attributes, and Options](#methods-attributes-and-options)
   * [`new HMLS([options])`](#new-hmlsoptions)
+  * [`hmls.init()`](#hmlsinit)
+  * [`hmls.start()`](#hmlsstart)
   * [`hmls.server`](#hmlsserver)
   * [`hmls.lasso`](#hmlslasso)
+- [Events](#events)
+  * [initialized](#initialized)
+  * [started](#started)
 - [socket.io](#socketio)
   * [pages/slash/index.marko](#pagesslashindexmarko)
   * [io/slash/index.js](#ioslashindexjs)
@@ -116,6 +121,22 @@ Instantiates a new `hmls` object.  `options` has the following defaults:
 * `assetsPath` - `HMLS` will serve all files in this folder at `/assets`, useful for static resources like images.
 * `ioPath` - `HMLS` wires up `socket.io`, any file in this folder is expected to export a function with the signature `function(io) {}`, where `io` is the `socket.io` instance.
 
+### `hmls.init()`
+
+Returns: `Promise`
+
+Initializes everything (`hapi`, `lasso`, `sockets`, et cetera).
+
+If this is not called explicitly it is called in `hmls.start()`.
+
+If you want to do things to the individual components prior to starting `hapi` (like manually adding routes to `hapi`) this is useful.
+
+### `hmls.start()`
+
+Returns: `Promise`
+
+Starts the `hapi` server, will invoke `hmls.init()` if it has not already been invoked.
+
 ### `hmls.server`
 
 The `hapi` server.
@@ -123,6 +144,16 @@ The `hapi` server.
 ### `hmls.lasso`
 
 The `lasso` instance.
+
+## Events
+
+### initialized
+
+Emitted after `hmls.init()` has completed.
+
+### started
+
+Emitted after `hmls.start()` has completed.  Useful for things like rigging `browser-refresh` or other things that require that all of the "initial work" has been done and the app is ready to go.
 
 ## socket.io
 
