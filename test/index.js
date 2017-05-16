@@ -100,3 +100,63 @@ describe('HMLS creation', function () {
     vc.server.stop()
   })
 })
+
+describe('HMLS initialization', function () {
+  let vc
+
+  before(function () {
+    vc = new HMLS(
+      {
+        routesPath: path.join(__dirname, '..', 'test-files', 'routes'),
+        assetsPath: path.join(__dirname, '..', 'test-files', 'assets')
+      }
+    )
+  })
+
+  it('vc.initialized should be false prior to init()', function () {
+    vc.initialized.should.be.false
+  })
+
+  it('if vc.start() is called before vc.init() is called vc.init() should be called', function (done) {
+    vc.initialized.should.be.false
+    vc.start()
+      .then(() => {
+        vc.initialized.should.be.true
+        vc.started.should.be.true
+        done()
+      })
+  })
+
+  after(function () {
+    vc.server.stop()
+  })
+})
+
+describe('HMLS start', function () {
+  let vc
+
+  before(function () {
+    vc = new HMLS(
+      {
+        routesPath: path.join(__dirname, '..', 'test-files', 'routes'),
+        assetsPath: path.join(__dirname, '..', 'test-files', 'assets')
+      }
+    )
+  })
+
+  it('vc.start() should error if already started', function (done) {
+    vc.start()
+      .then(() => {
+        return vc.start()
+      })
+      .catch((err) => {
+      // console.log(err)
+        err.message.should.equal('already started')
+        done()
+      })
+  })
+
+  after(function () {
+    vc.server.stop()
+  })
+})

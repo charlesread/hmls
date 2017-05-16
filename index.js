@@ -113,6 +113,7 @@ function HMLS (options) {
   this.server = new Hapi.Server()
   this.lasso = lasso
   this.initialized = false
+  this.started = false
 }
 
 HMLS.prototype = Object.create(EventEmitter.prototype)
@@ -139,19 +140,28 @@ HMLS.prototype.init = function () {
   })
 }
 HMLS.prototype.start = function () {
+  let that = this
   debug('13 - starting start()')
-  return new Promise((resolve, reject) => {
-    if (!this.initialized) {
-      this.init()
+  return co(function * () {
+    if (that.started === true) {
+      throw new Error('already started')
     }
-    this.server.start((err) => {
-      if (err) {
-        return reject(err)
-      }
-      this.emit('started')
-      debug('14 - resolving from start()')
-      resolve(this)
-    })
+    if (!that.initialized) {
+      yield that.init()
+    }
+    yield (function() {
+      return new Promise((resolve, reject) => {
+        that.server.start((err) => {
+          if (err) {
+            reject(err)
+          }
+          that.started = true
+          that.emit('started')
+          debug('14 - resolving from start()')
+          resolve(that)
+        })
+      })
+    })();
   })
 }
 
