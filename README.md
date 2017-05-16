@@ -146,6 +146,10 @@ The `hapi` server.
 
 The `lasso` instance.
 
+### `hmls.io`
+
+The `socket.io` instance.
+
 ## Events
 
 ### initialized
@@ -155,92 +159,6 @@ Emitted after `hmls.init()` has completed.
 ### started
 
 Emitted after `hmls.start()` has completed.  Useful for things like rigging `browser-refresh` or other things that require that all of the "initial work" has been done and the app is ready to go.
-
-## socket.io
-
-`socket.io` is all wired up.  To add sockets to `HMLS` add JS files to the `/io` folder (or whichever folder) set with `options.ioPath`.
-
-A trivial file in the `/io` folder:
-
-```js
-'use strict'
-
-module.exports = function (io) {
-  io.on('connection', function(socket) {
-    console.log('%s connected', socket.id)
-  })
-}
-```
-
-Then the view (the `.marko` file) should include the `socket.io` client JS library (simply paste `<script src="/socket.io/socket.io.js"></script>`).
-
-For example:
-
-### pages/slash/index.marko
-
-```html
-<lasso-page package-path="./browser.json"/>
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>/</title>
-    <lasso-head/>
-    <script src="/socket.io/socket.io.js"></script>
-</head>
-<body>
-<h1>
-    The current <code>Date</code> is ${input.now}!
-</h1>
-<lasso-body/>
-</body>
-</html>
-```
-
-### io/slash/index.js
-
-```js
-'use strict'
-
-module.exports = function (io) {
-  io.on('connection', function(socket) {
-    console.log('%s connected', socket.id)
-    socket.on('greetingAcknowledgement', function() {
-      console.log('%s acknowledged `greeting`', socket.id)
-    })
-    console.log('sending `greeting` to %s', socket.id)
-    socket.emit('greeting')
-  })
-}
-```
-
-Now you can interact with the server with client JS:
-
-### pages/slash/lib.js
-
-```js
-var socket = io();
-
-socket.on('greeting', function() {
-  console.log('received `greeting` from server');
-  socket.emit('greetingAcknowledgement');
-});
-```
-
-Node console:
-
-```js
-server started at http://localhost:8080
-VwyAfRLa6cSJM3neAAAA connected
-sending `greeting` to VwyAfRLa6cSJM3neAAAA
-VwyAfRLa6cSJM3neAAAA acknowledged `greeting`
-```
-
-Browser console:
-
-```js
-received `greeting` from server
-```
 
 ## Examples
 
@@ -419,6 +337,92 @@ console.log('from pages/slash/lib2.js');
 
 _Notice that the two JS lib files have been combined into one resource, also notice the jQuery injection._
  
+## socket.io
+
+`socket.io` is all wired up.  To add sockets to `HMLS` add JS files to the `/io` folder (or whichever folder) set with `options.ioPath`.
+
+A trivial file in the `/io` folder:
+
+```js
+'use strict'
+
+module.exports = function (io) {
+  io.on('connection', function(socket) {
+    console.log('%s connected', socket.id)
+  })
+}
+```
+
+Then the view (the `.marko` file) should include the `socket.io` client JS library (simply paste `<script src="/socket.io/socket.io.js"></script>`).
+
+For example:
+
+### pages/slash/index.marko
+
+```html
+<lasso-page package-path="./browser.json"/>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>/</title>
+    <lasso-head/>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+<h1>
+    The current <code>Date</code> is ${input.now}!
+</h1>
+<lasso-body/>
+</body>
+</html>
+```
+
+### io/slash/index.js
+
+```js
+'use strict'
+
+module.exports = function (io) {
+  io.on('connection', function(socket) {
+    console.log('%s connected', socket.id)
+    socket.on('greetingAcknowledgement', function() {
+      console.log('%s acknowledged `greeting`', socket.id)
+    })
+    console.log('sending `greeting` to %s', socket.id)
+    socket.emit('greeting')
+  })
+}
+```
+
+Now you can interact with the server with client JS:
+
+### pages/slash/lib.js
+
+```js
+var socket = io();
+
+socket.on('greeting', function() {
+  console.log('received `greeting` from server');
+  socket.emit('greetingAcknowledgement');
+});
+```
+
+Node console:
+
+```js
+server started at http://localhost:8080
+VwyAfRLa6cSJM3neAAAA connected
+sending `greeting` to VwyAfRLa6cSJM3neAAAA
+VwyAfRLa6cSJM3neAAAA acknowledged `greeting`
+```
+
+Browser console:
+
+```js
+received `greeting` from server
+``` 
+ 
 ## Structure and Architecture
  
 `Hapi` is _fantastic_ at serving static content (well, really any content).  `Hapi` is the webserver used in `HMLS`.  You can directly access the `hapi` instance with `hmls.server`.
@@ -426,6 +430,8 @@ _Notice that the two JS lib files have been combined into one resource, also not
 `Marko` is _fantastic_ at rendering dynamic content.  `Marko` is used as `HMLS`' templating engine.
 
 `Lasso` is _fantastic_ at bundling resources together (client JS, CSS, et cetera).  You can directly access the `lasso` instance with `hmls.lasso`.
+
+`socket.io` is super neat and allows the client and the server to communicate via websockets.  
 
 (see where I am going here?)
 
@@ -457,4 +463,18 @@ This folder is where `lasso` will output bundled resources.  By default it is th
 
 #### /assets
 
-You can put anything in here that you'd like to be served, like images or other resources.
+You can put anything in here that you'd like to be served, like images or other resources. By default it is the `assets` folder in your project root.  Change this with `options.assetsPath`.
+
+#### /io
+
+All files in this folder will be `require`d.  It is assumed that each file will export a single function whose one parameter is the HMLS `socket.io` instance (accessible anytime via `hmls.io`).  Then you can do whatever you like via `socket.io`.  Here's an example of a file in the `/io` folder:
+
+```js
+'use strict'
+
+module.exports = function (io) {
+  io.on('connection', function(socket) {
+    console.log('%s connected', socket.id)
+  })
+}
+```
