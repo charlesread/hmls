@@ -54,11 +54,13 @@ function registerInertRoutes () {
 }
 
 function registerRoutes () {
+  debug('10 - registering routes')
   return new Promise((resolve, reject) => {
-    debug('10 - registering routes')
     try {
       fs.statSync(this._options.routesPath)
+      debug('10a - this._options.routesPath does exist: %s', this._options.routesPath)
     } catch(err) {
+      debug('10a - this._options.routesPath does NOT exist: %s', this._options.routesPath)
       return resolve()
     }
     if (this._options.routesPath) {
@@ -79,11 +81,13 @@ function registerRoutes () {
 }
 
 function registerIoSockets () {
+  debug('11 - registering sockets')
   return new Promise((resolve, reject) => {
-    debug('11 - registering sockets')
     try {
       fs.statSync(this._options.ioPath)
+      debug('11a - this._options.ioPath does exist: %s', this._options.ioPath)
     } catch(err) {
+      debug('11a - this._options.ioPath does NOT exist: %s', this._options.ioPath)
       return resolve()
     }
     dir.files(this._options.ioPath, (err, files) => {
