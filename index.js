@@ -2,14 +2,104 @@
 
 require('require-self-ref')
 const Promise = require('bluebird')
+const co = require('bluebird-co').co
 const Hapi = require('hapi')
 const dir = require('node-dir')
 const lasso = require('lasso')
 const EventEmitter = require('events')
 const deepAssign = require('deep-assign')
 const debug = require('debug')('HMLS')
+const fs = require('fs')
 
 const config = require('~/config')
+
+function registerInertRoutes () {
+  debug('5 - registering inert')
+  return new Promise((resolve, reject) => {
+    this.server.register(require('inert'), (err) => {
+      if (err) {
+        return reject(err)
+      }
+      debug('6 - static folder, start')
+      // serve static folder
+      if (this._options.staticPath || this.lasso.defaultConfig.outputDir) {
+        this.server.route({
+          method: 'GET',
+          path: '/static/{param*}',
+          handler: {
+            directory: {
+              path: this._options.staticPath || this.lasso.defaultConfig.outputDir
+            }
+          }
+        })
+        debug('7 - static folder, end')
+      }
+      debug('8 - assets folder, start')
+      // serve assets folder
+      if (this._options.assetsPath) {
+        this.server.route({
+          method: 'GET',
+          path: '/assets/{param*}',
+          handler: {
+            directory: {
+              path: this._options.assetsPath
+            }
+          }
+        })
+        debug('9 - assets folder, end')
+      }
+    })
+    resolve()
+  })
+}
+
+function registerRoutes () {
+  return new Promise((resolve, reject) => {
+    debug('10 - registering routes')
+    try {
+      fs.statSync(this._options.routesPath)
+    } catch(err) {
+      return resolve()
+    }
+    if (this._options.routesPath) {
+      dir.files(this._options.routesPath, (err, files) => {
+        if (err) {
+          return reject(err)
+        }
+        for (let i = 0; i < files.length; i++) {
+          debug(' registering route at %s', files[i])
+          this.server.route(require(files[i]))
+          if (i === files.length - 1) {
+            resolve()
+          }
+        }
+      })
+    }
+  })
+}
+
+function registerIoSockets () {
+  return new Promise((resolve, reject) => {
+    debug('11 - registering sockets')
+    try {
+      fs.statSync(this._options.ioPath)
+    } catch(err) {
+      return resolve()
+    }
+    dir.files(this._options.ioPath, (err, files) => {
+      if (err) {
+        return reject(err)
+      }
+      for (let i = 0; i < files.length; i++) {
+        debug(' registering socket at %s', files[i])
+        require(files[i])(this.io)
+        if (i === files.length - 1) {
+          resolve()
+        }
+      }
+    })
+  })
+}
 
 function HMLS (options) {
   this._options = deepAssign({}, config.options, options)
@@ -24,82 +114,26 @@ function HMLS (options) {
 HMLS.prototype = Object.create(EventEmitter.prototype)
 HMLS.prototype.constructor = HMLS
 HMLS.prototype.init = function () {
-  require('marko/node-require').install()
-  require('marko/compiler').defaultOptions.writeToDisk = false
-  debug('1 - starting init()')
-  return new Promise((resolve, reject) => {
-    try {
-      debug('2 - server.connection()')
-      this.server.connection(this._options.server)
-      debug('3 - rigging socket.io')
-      this.io = require('socket.io')(this.server.listener)
-      debug('4 - configuring lasso')
-      this.lasso.configure(this._options.lasso)
-      debug('5 - registering inert')
-      this.server.register(require('inert'), (err) => {
-        if (err) {
-          return reject(err)
-        }
-        debug('6 - static folder, start')
-        // serve static folder
-        if (this._options.staticPath || this.lasso.defaultConfig.outputDir) {
-          this.server.route({
-            method: 'GET',
-            path: '/static/{param*}',
-            handler: {
-              directory: {
-                path: this._options.staticPath || this.lasso.defaultConfig.outputDir
-              }
-            }
-          })
-          debug('7 - static folder, end')
-        }
-        debug('8 - assets folder, start')
-        // serve assets folder
-        if (this._options.assetsPath) {
-          this.server.route({
-            method: 'GET',
-            path: '/assets/{param*}',
-            handler: {
-              directory: {
-                path: this._options.assetsPath
-              }
-            }
-          })
-          debug('9 - assets folder, end')
-        }
-      })
-      debug('10 - registering routes')
-      // if a routes path is specified add all routes
-      if (this._options.routesPath) {
-        dir.files(this._options.routesPath, (err, files) => {
-          if (err) {
-            return reject(err)
-          }
-          for (let i = 0; i < files.length; i++) {
-            debug(' registering route at %s', files[i])
-            this.server.route(require(files[i]))
-          }
-        })
-      }
-      debug('11 - registering sockets')
-      // add all socket.io files
-      dir.files(this._options.ioPath, (err, files) => {
-        if (err) {
-          return reject(err)
-        }
-        for (let i = 0; i < files.length; i++) {
-          debug(' registering socket at %s', files[i])
-          require(files[i])(this.io)
-        }
-      })
-      this.initialized = true
-      this.emit('initialized')
-      debug('12 - resolving from init()')
-      resolve(this)
-    } catch (err) {
-      reject(err)
-    }
+  const that = this
+  co(function * () {
+    require('marko/node-require').install()
+    require('marko/compiler').defaultOptions.writeToDisk = false
+    debug('1 - starting init()')
+    // return new Promise((resolve, reject) => {
+    //   try {
+    debug('2 - server.connection()')
+    that.server.connection(that._options.server)
+    debug('3 - rigging socket.io')
+    that.io = require('socket.io')(that.server.listener)
+    debug('4 - configuring lasso')
+    that.lasso.configure(that._options.lasso)
+    yield registerInertRoutes.call(that)
+    yield registerRoutes.call(that)
+    yield registerIoSockets.call(that)
+    that.initialized = true
+    that.emit('initialized')
+    debug('12 - returning from init()')
+    return that
   })
 }
 HMLS.prototype.start = function () {
@@ -107,7 +141,6 @@ HMLS.prototype.start = function () {
   return new Promise((resolve, reject) => {
     if (!this.initialized) {
       this.init()
-      // return reject(new Error('not yet initialized, call HMLS.init() before HMLS.start()'))
     }
     this.server.start((err) => {
       if (err) {

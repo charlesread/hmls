@@ -1,4 +1,5 @@
 require('require-self-ref')
+const path = require('path')
 const should = require('chai').should()
 const expect = require('chai').expect
 const request = require('request')
@@ -9,7 +10,12 @@ describe('HMLS creation', function () {
   let vc
 
   before(function () {
-    vc = new HMLS()
+    vc = new HMLS(
+      {
+        routesPath: path.join(__dirname, '..', 'test-files', 'routes'),
+        assetsPath: path.join(__dirname, '..', 'test-files', 'assets')
+      }
+    )
   })
 
   it('vc should not be undefined', function () {
@@ -57,6 +63,34 @@ describe('HMLS creation', function () {
       function (err, response, body) {
         expect(err).to.be.null
         body.should.equal('/')
+        done()
+      }
+    )
+  })
+
+  it('/info endpoint should exist and return "info"', function (done) {
+    request(
+      {
+        uri: 'http://localhost:8080/info',
+        method: 'get'
+      },
+      function (err, response, body) {
+        expect(err).to.be.null
+        body.should.equal('info')
+        done()
+      }
+    )
+  })
+
+  it('/assets/linux.png endpoint should exist and return 200', function (done) {
+    request(
+      {
+        uri: 'http://localhost:8080/assets/linux.png',
+        method: 'get'
+      },
+      function (err, response, body) {
+        expect(err).to.be.null
+        response.statusCode.should.equal(200)
         done()
       }
     )

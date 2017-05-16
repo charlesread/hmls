@@ -29,6 +29,7 @@
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.5.0",
+    "bluebird-co": "^2.2.0",
     "debug": "^2.6.6",
     "deep-assign": "^2.0.0",
     "hapi": "^16.1.1",
