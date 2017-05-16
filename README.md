@@ -21,31 +21,33 @@ Express is bloated and too intricate.
   * [`hmls.start()`](#hmlsstart)
   * [`hmls.server`](#hmlsserver)
   * [`hmls.lasso`](#hmlslasso)
+  * [`hmls.io`](#hmlsio)
 - [Events](#events)
   * [initialized](#initialized)
   * [started](#started)
-- [socket.io](#socketio)
-  * [pages/slash/index.marko](#pagesslashindexmarko)
-  * [io/slash/index.js](#ioslashindexjs)
-  * [pages/slash/lib.js](#pagesslashlibjs)
-- [Examples](#examples)
-  * [With a simple `marko` template](#with-a-simple-marko-template)
-    + [index.js](#indexjs-1)
-    + [pages/slash/index.marko](#pagesslashindexmarko-1)
-    + [routes/slash/index.js](#routesslashindexjs)
-  * [Bundling assets with `lasso`](#bundling-assets-with-lasso)
-    + [index.js](#indexjs-2)
-    + [routes/slash/index.js](#routesslashindexjs-1)
-    + [pages/slash/index.marko](#pagesslashindexmarko-2)
-    + [pages/slash/browser.json](#pagesslashbrowserjson)
-    + [pages/slash/lib1.js](#pagesslashlib1js)
-    + [pages/slash/lib2.js](#pagesslashlib2js)
-    + [pages/slash/style.css](#pagesslashstylecss)
 - [Structure and Architecture](#structure-and-architecture)
   * [Project Structure](#project-structure)
     + [/routes](#routes)
     + [/static](#static)
     + [/assets](#assets)
+    + [/io](#io)
+- [Examples](#examples)
+  * [With a simple `marko` template](#with-a-simple-marko-template)
+    + [index.js](#indexjs-1)
+    + [pages/slash/index.marko](#pagesslashindexmarko)
+    + [routes/slash/index.js](#routesslashindexjs)
+  * [Bundling assets with `lasso`](#bundling-assets-with-lasso)
+    + [index.js](#indexjs-2)
+    + [routes/slash/index.js](#routesslashindexjs-1)
+    + [pages/slash/index.marko](#pagesslashindexmarko-1)
+    + [pages/slash/browser.json](#pagesslashbrowserjson)
+    + [pages/slash/lib1.js](#pagesslashlib1js)
+    + [pages/slash/lib2.js](#pagesslashlib2js)
+    + [pages/slash/style.css](#pagesslashstylecss)
+  * [socket.io](#socketio)
+    + [pages/slash/index.marko](#pagesslashindexmarko-2)
+    + [io/slash/index.js](#ioslashindexjs)
+    + [pages/slash/lib.js](#pagesslashlibjs)
 
 <!-- tocstop -->
 
@@ -159,6 +161,62 @@ Emitted after `hmls.init()` has completed.
 ### started
 
 Emitted after `hmls.start()` has completed.  Useful for things like rigging `browser-refresh` or other things that require that all of the "initial work" has been done and the app is ready to go.
+
+## Structure and Architecture
+ 
+`Hapi` is _fantastic_ at serving static content (well, really any content).  `Hapi` is the webserver used in `HMLS`.  You can directly access the `hapi` instance with `hmls.server`.
+
+`Marko` is _fantastic_ at rendering dynamic content.  `Marko` is used as `HMLS`' templating engine.
+
+`Lasso` is _fantastic_ at bundling resources together (client JS, CSS, et cetera).  You can directly access the `lasso` instance with `hmls.lasso`.
+
+`socket.io` is super neat and allows the client and the server to communicate via websockets.  
+
+(see where I am going here?)
+
+All `HMLS` really does is wire all of these pieces together, while exposing each piece, so you can get as hardcore with each piece as you like.
+
+### Project Structure
+
+#### /routes
+
+This folder should contain JS files that export `hapi` routes.  By default it is the `routes` folder in your project root.  Change this with `options.routesPath`.
+
+An example of a trivial route file:
+
+```js
+'use strict'
+
+module.exports = [{
+  method: 'get',
+  path: '/',
+  handler: function (req, reply) {
+    reply('I get rendered to the browser!')
+  }
+}]
+```
+
+#### /static
+
+This folder is where `lasso` will output bundled resources.  By default it is the `static` folder in your project root.  Change this with `options.lasso.outputDir`.
+
+#### /assets
+
+You can put anything in here that you'd like to be served, like images or other resources. By default it is the `assets` folder in your project root.  Change this with `options.assetsPath`.
+
+#### /io
+
+All files in this folder will be `require`d.  It is assumed that each file will export a single function whose one parameter is the HMLS `socket.io` instance (accessible anytime via `hmls.io`).  Then you can do whatever you like via `socket.io`.  Here's an example of a file in the `/io` folder:
+
+```js
+'use strict'
+
+module.exports = function (io) {
+  io.on('connection', function(socket) {
+    console.log('%s connected', socket.id)
+  })
+}
+```
 
 ## Examples
 
@@ -337,7 +395,7 @@ console.log('from pages/slash/lib2.js');
 
 _Notice that the two JS lib files have been combined into one resource, also notice the jQuery injection._
  
-## socket.io
+### socket.io
 
 `socket.io` is all wired up.  To add sockets to `HMLS` add JS files to the `/io` folder (or whichever folder) set with `options.ioPath`.
 
@@ -357,7 +415,7 @@ Then the view (the `.marko` file) should include the `socket.io` client JS libra
 
 For example:
 
-### pages/slash/index.marko
+#### pages/slash/index.marko
 
 ```html
 <lasso-page package-path="./browser.json"/>
@@ -378,7 +436,7 @@ For example:
 </html>
 ```
 
-### io/slash/index.js
+#### io/slash/index.js
 
 ```js
 'use strict'
@@ -397,7 +455,7 @@ module.exports = function (io) {
 
 Now you can interact with the server with client JS:
 
-### pages/slash/lib.js
+#### pages/slash/lib.js
 
 ```js
 var socket = io();
@@ -421,60 +479,4 @@ Browser console:
 
 ```js
 received `greeting` from server
-``` 
- 
-## Structure and Architecture
- 
-`Hapi` is _fantastic_ at serving static content (well, really any content).  `Hapi` is the webserver used in `HMLS`.  You can directly access the `hapi` instance with `hmls.server`.
-
-`Marko` is _fantastic_ at rendering dynamic content.  `Marko` is used as `HMLS`' templating engine.
-
-`Lasso` is _fantastic_ at bundling resources together (client JS, CSS, et cetera).  You can directly access the `lasso` instance with `hmls.lasso`.
-
-`socket.io` is super neat and allows the client and the server to communicate via websockets.  
-
-(see where I am going here?)
-
-All `HMLS` really does is wire all of these pieces together, while exposing each piece, so you can get as hardcore with each piece as you like.
-
-### Project Structure
-
-#### /routes
-
-This folder should contain JS files that export `hapi` routes.  By default it is the `routes` folder in your project root.  Change this with `options.routesPath`.
-
-An example of a trivial route file:
-
-```js
-'use strict'
-
-module.exports = [{
-  method: 'get',
-  path: '/',
-  handler: function (req, reply) {
-    reply('I get rendered to the browser!')
-  }
-}]
-```
-
-#### /static
-
-This folder is where `lasso` will output bundled resources.  By default it is the `static` folder in your project root.  Change this with `options.lasso.outputDir`.
-
-#### /assets
-
-You can put anything in here that you'd like to be served, like images or other resources. By default it is the `assets` folder in your project root.  Change this with `options.assetsPath`.
-
-#### /io
-
-All files in this folder will be `require`d.  It is assumed that each file will export a single function whose one parameter is the HMLS `socket.io` instance (accessible anytime via `hmls.io`).  Then you can do whatever you like via `socket.io`.  Here's an example of a file in the `/io` folder:
-
-```js
-'use strict'
-
-module.exports = function (io) {
-  io.on('connection', function(socket) {
-    console.log('%s connected', socket.id)
-  })
-}
 ```
