@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/charlesread/hmls.svg?branch=master)](https://travis-ci.org/charlesread/hmls)
+
 # HMLS
 
 Go from 0 to webapp in seconds.
