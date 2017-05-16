@@ -119,7 +119,7 @@ HMLS.prototype = Object.create(EventEmitter.prototype)
 HMLS.prototype.constructor = HMLS
 HMLS.prototype.init = function () {
   const that = this
-  co(function * () {
+  return co(function * () {
     require('marko/node-require').install()
     require('marko/compiler').defaultOptions.writeToDisk = false
     debug('1 - starting init()')
