@@ -59,7 +59,7 @@ function registerRoutes () {
     try {
       fs.statSync(this._options.routesPath)
       debug('10a - this._options.routesPath does exist: %s', this._options.routesPath)
-    } catch(err) {
+    } catch (err) {
       debug('10a - this._options.routesPath does NOT exist: %s', this._options.routesPath)
       return resolve()
     }
@@ -86,7 +86,7 @@ function registerIoSockets () {
     try {
       fs.statSync(this._options.ioPath)
       debug('11a - this._options.ioPath does exist: %s', this._options.ioPath)
-    } catch(err) {
+    } catch (err) {
       debug('11a - this._options.ioPath does NOT exist: %s', this._options.ioPath)
       return resolve()
     }
@@ -118,13 +118,11 @@ function HMLS (options) {
 HMLS.prototype = Object.create(EventEmitter.prototype)
 HMLS.prototype.constructor = HMLS
 HMLS.prototype.init = function () {
+  debug('1 - starting init()')
   const that = this
   return co(function * () {
     require('marko/node-require').install()
     require('marko/compiler').defaultOptions.writeToDisk = false
-    debug('1 - starting init()')
-    // return new Promise((resolve, reject) => {
-    //   try {
     debug('2 - server.connection()')
     that.server.connection(that._options.server)
     debug('3 - rigging socket.io')
