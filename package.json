@@ -23,6 +23,9 @@
     "test": "node_modules/mocha/bin/mocha",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
+  "bin": {
+    "hmls": "bin/hmls.js"
+  },
   "pre-commit": [
     "test"
   ],
@@ -31,6 +34,7 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "bluebird-co": "^2.2.0",
+    "colors": "^1.1.2",
     "debug": "^2.6.6",
     "deep-assign": "^2.0.0",
     "hapi": "^16.1.1",
@@ -38,7 +42,9 @@
     "lasso": "^2.11.11",
     "lasso-marko": "^2.3.0",
     "marko": "^4.3.0",
+    "mkdirp": "^0.5.1",
     "node-dir": "^0.1.16",
+    "nopt": "^4.0.1",
     "require-self-ref": "^2.0.1",
     "socket.io": "^2.0.1"
   },

@@ -8,18 +8,31 @@ const HMLS = require('~/index')
 
 describe('HMLS creation', function () {
   let vc
+  const routesPath = path.join(__dirname, '..', 'test-files', 'routes')
+  const assetsPath = path.join(__dirname, '..', 'test-files', 'assets')
 
   before(function () {
     vc = new HMLS(
       {
-        routesPath: path.join(__dirname, '..', 'test-files', 'routes'),
-        assetsPath: path.join(__dirname, '..', 'test-files', 'assets')
+        server: {
+          port: 8993
+        },
+        routesPath,
+        assetsPath
       }
     )
   })
 
   it('vc should not be undefined', function () {
     vc.should.not.be.undefined
+  })
+
+  it('routesPath should be correct', function () {
+    vc._options.routesPath.should.equal(routesPath)
+  })
+
+  it('assetsPath should be correct', function () {
+    vc._options.assetsPath.should.equal(assetsPath)
   })
 
   it('vc should have server and lasso properties', function () {
@@ -57,7 +70,7 @@ describe('HMLS creation', function () {
   it('/ endpoint should exist and return "/"', function (done) {
     request(
       {
-        uri: 'http://localhost:8080',
+        uri: 'http://localhost:8993',
         method: 'get'
       },
       function (err, response, body) {
@@ -71,7 +84,7 @@ describe('HMLS creation', function () {
   it('/info endpoint should exist and return "info"', function (done) {
     request(
       {
-        uri: 'http://localhost:8080/info',
+        uri: 'http://localhost:8993/info',
         method: 'get'
       },
       function (err, response, body) {
@@ -85,7 +98,7 @@ describe('HMLS creation', function () {
   it('/assets/linux.png endpoint should exist and return 200', function (done) {
     request(
       {
-        uri: 'http://localhost:8080/assets/linux.png',
+        uri: 'http://localhost:8993/assets/linux.png',
         method: 'get'
       },
       function (err, response, body) {
