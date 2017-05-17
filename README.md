@@ -104,11 +104,19 @@ Then `node index.js` and visit http://localhost:8080 to see your home page.
 
 `HMLS` comes with a CLI that can be used to create all of the files and folders (along with small examples) necessary to run  immediately.
 
-First install `HMLS` globally:
+First create a project and install `HMLS` globally:
+
+`mkdir <project>`
+ 
+`cd <project>`
+ 
+`npm init`
+ 
+`npm install --save hmls lasso`
 
 `npm install --global hmls`
 
-Then change directories to yor project root and:
+Then:
 
 `$ hmls --scaffold && node index.js`
 
