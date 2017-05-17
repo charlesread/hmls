@@ -18,6 +18,7 @@ Express is bloated and too intricate.
 - [Installation](#installation)
   * [index.js](#indexjs)
   * [routes/index.js](#routesindexjs)
+- [Scaffolding](#scaffolding)
 - [Methods, Attributes, and Options](#methods-attributes-and-options)
   * [`new HMLS([options])`](#new-hmlsoptions)
   * [`hmls.init()`](#hmlsinit)
@@ -99,7 +100,7 @@ module.exports = {
 
 Then `node index.js` and visit http://localhost:8080 to see your home page.
 
-# Scaffolding
+## Scaffolding
 
 `HMLS` comes with a CLI that can be used to create all of the files and folders (along with small examples) necessary to run  immediately.
 
