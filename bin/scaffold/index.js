@@ -9,3 +9,6 @@ const vc = new HMLS()
   await vc.start()
   console.log('server started: %s', vc.server.info.uri)
 }()
+  .catch((err) => {
+    console.error(err.message)
+  })
