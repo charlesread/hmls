@@ -62,7 +62,7 @@ Express is bloated and too intricate.
  
 `npm init`
  
-`npm install --save hmls`
+`npm install --save hmls lasso` (see [#1](https://github.com/charlesread/hmls/issues/1))
  
 Then make a few files:
 
@@ -98,6 +98,20 @@ module.exports = {
 ```
 
 Then `node index.js` and visit http://localhost:8080 to see your home page.
+
+# Scaffolding
+
+`HMLS` comes with a CLI that can be used to create all of the files and folders (along with small examples) necessary to run  immediately.
+
+First install `HMLS` globally:
+
+`npm install --global hmls`
+
+Then change directories to yor project root and:
+
+`$ hmls --scaffold && node index.js`
+
+Simple as that!
 
 ## Methods, Attributes, and Options
 
