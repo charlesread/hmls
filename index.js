@@ -13,7 +13,7 @@ const fs = require('fs')
 
 const config = require('~/config')
 
-function registerInertRoutes () {
+function registerInertRoutes() {
   debug('5 - registering inert')
   return new Promise((resolve, reject) => {
     this.server.register(require('inert'), (err) => {
@@ -53,7 +53,7 @@ function registerInertRoutes () {
   })
 }
 
-function registerRoutes () {
+function registerRoutes() {
   debug('10 - registering routes')
   return new Promise((resolve, reject) => {
     try {
@@ -69,12 +69,12 @@ function registerRoutes () {
           return reject(err)
         }
         for (let i = 0; i < files.length; i++) {
-          if (files[i].charAt(0) !== '.') {
-            debug(' registering route at %s', files[i])
+          debug(' registering route at %s', files[i])
+          try {
             this.server.route(require(files[i]))
-            if (i === files.length - 1) {
-              resolve()
-            }
+          } catch (err) {}
+          if (i === files.length - 1) {
+            resolve()
           }
         }
       })
@@ -82,7 +82,7 @@ function registerRoutes () {
   })
 }
 
-function registerIoSockets () {
+function registerIoSockets() {
   debug('11 - registering sockets')
   return new Promise((resolve, reject) => {
     try {
@@ -97,19 +97,19 @@ function registerIoSockets () {
         return reject(err)
       }
       for (let i = 0; i < files.length; i++) {
-        if (files[i].charAt(0) !== '.') {
-          debug(' registering socket at %s', files[i])
+        debug(' registering socket at %s', files[i])
+        try {
           require(files[i])(this.io)
-          if (i === files.length - 1) {
-            resolve()
-          }
+        } catch (err) {}
+        if (i === files.length - 1) {
+          resolve()
         }
       }
     })
   })
 }
 
-function HMLS (options) {
+function HMLS(options) {
   this._options = deepAssign({}, config.options, options)
   if (!this._options.lasso || !this._options.lasso.outputDir) {
     throw config.errors.options.lasso
@@ -125,7 +125,7 @@ HMLS.prototype.constructor = HMLS
 HMLS.prototype.init = function () {
   debug('1 - starting init()')
   const that = this
-  return co(function * () {
+  return co(function *() {
     require('marko/node-require').install()
     require('marko/compiler').defaultOptions.writeToDisk = false
     debug('2 - server.connection()')
@@ -146,14 +146,14 @@ HMLS.prototype.init = function () {
 HMLS.prototype.start = function () {
   let that = this
   debug('13 - starting start()')
-  return co(function * () {
+  return co(function *() {
     if (that.started === true) {
       throw new Error('already started')
     }
     if (!that.initialized) {
       yield that.init()
     }
-    yield (function() {
+    yield (function () {
       return new Promise((resolve, reject) => {
         that.server.start((err) => {
           if (err) {
