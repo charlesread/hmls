@@ -1,7 +1,0 @@
-{
-  "dependencies": [
-    "../layout/template/browser.json",
-    "./lib.js",
-    "./style.css"
-  ]
-}
