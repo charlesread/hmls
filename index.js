@@ -69,10 +69,12 @@ function registerRoutes () {
           return reject(err)
         }
         for (let i = 0; i < files.length; i++) {
-          debug(' registering route at %s', files[i])
-          this.server.route(require(files[i]))
-          if (i === files.length - 1) {
-            resolve()
+          if (files[i].charAt(0) !== '.') {
+            debug(' registering route at %s', files[i])
+            this.server.route(require(files[i]))
+            if (i === files.length - 1) {
+              resolve()
+            }
           }
         }
       })
@@ -95,10 +97,12 @@ function registerIoSockets () {
         return reject(err)
       }
       for (let i = 0; i < files.length; i++) {
-        debug(' registering socket at %s', files[i])
-        require(files[i])(this.io)
-        if (i === files.length - 1) {
-          resolve()
+        if (files[i].charAt(0) !== '.') {
+          debug(' registering socket at %s', files[i])
+          require(files[i])(this.io)
+          if (i === files.length - 1) {
+            resolve()
+          }
         }
       }
     })
