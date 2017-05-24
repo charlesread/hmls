@@ -72,7 +72,9 @@ function registerRoutes() {
           debug(' registering route at %s', files[i])
           try {
             this.server.route(require(files[i]))
-          } catch (err) {}
+          } catch (err) {
+            console.error(err.message)
+          }
           if (i === files.length - 1) {
             resolve()
           }
@@ -134,9 +136,6 @@ HMLS.prototype.init = function () {
     that.io = require('socket.io')(that.server.listener)
     debug('4 - configuring lasso')
     that.lasso.configure(that._options.lasso)
-    yield registerInertRoutes.call(that)
-    yield registerRoutes.call(that)
-    yield registerIoSockets.call(that)
     that.initialized = true
     that.emit('initialized')
     debug('12 - returning from init()')
@@ -153,6 +152,9 @@ HMLS.prototype.start = function () {
     if (!that.initialized) {
       yield that.init()
     }
+    yield registerInertRoutes.call(that)
+    yield registerRoutes.call(that)
+    yield registerIoSockets.call(that)
     yield (function () {
       return new Promise((resolve, reject) => {
         that.server.start((err) => {
