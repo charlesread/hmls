@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/charlesread/hmls.svg?branch=master)](https://travis-ci.org/charlesread/hmls)
+[![Dependencies](https://david-dm.org/charlesread/hmls.svg)](https://david-dm.org/charlesread/hmls)
 [![Coverage Status](https://coveralls.io/repos/github/charlesread/hmls/badge.svg?branch=master)](https://coveralls.io/github/charlesread/hmls?branch=master)
 
 # HMLS
