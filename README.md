@@ -3,6 +3,8 @@
 
 # HMLS
 
+[![Join the chat at https://gitter.im/hmls-njs/Lobby](https://badges.gitter.im/hmls-njs/Lobby.svg)](https://gitter.im/hmls-njs/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Go from 0 to webapp in seconds.
 
 Express is bloated and too intricate.
