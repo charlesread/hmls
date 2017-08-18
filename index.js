@@ -116,7 +116,7 @@ function HMLS(options) {
   if (!this._options.lasso || !this._options.lasso.outputDir) {
     throw config.errors.options.lasso
   }
-  this.server = new Hapi.Server()
+  this.server = new Hapi.Server(options.hapi)
   this.lasso = lasso
   this.initialized = false
   this.started = false
