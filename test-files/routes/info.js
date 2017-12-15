@@ -4,8 +4,8 @@ module.exports = [
   {
     method: 'get',
     path: '/info',
-    handler: function (req, reply) {
-      reply('info')
+    handler: function (req, h) {
+      return 'info'
     }
   }
 ]

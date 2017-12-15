@@ -53,8 +53,8 @@ describe('HMLS creation', function () {
       {
         method: 'get',
         path: '/',
-        handler: function (req, reply) {
-          reply('/')
+        handler: function (req, h) {
+          return '/'
         }
       }
     )
