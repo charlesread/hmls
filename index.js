@@ -1,8 +1,6 @@
 'use strict'
 
 require('require-self-ref')
-const Promise = require('bluebird')
-const co = require('bluebird-co').co
 const Hapi = require('hapi')
 const dir = require('node-dir')
 const lasso = require('lasso')

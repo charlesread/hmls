@@ -6,10 +6,16 @@ const request = require('request')
 
 const HMLS = require('~/index')
 
+process.on('unhandledRejection', error => {
+  console.error('unhandledRejection', error.message);
+  console.error(error.stack)
+});
+
 describe('HMLS creation', function () {
   let vc
   const routesPath = path.join(__dirname, '..', 'test-files', 'routes')
   const assetsPath = path.join(__dirname, '..', 'test-files', 'assets')
+  const outputDir = path.join(__dirname, '..', 'test-files', 'static')
 
   before(function () {
     vc = new HMLS(
@@ -18,7 +24,10 @@ describe('HMLS creation', function () {
           port: 8993
         },
         routesPath,
-        assetsPath
+        assetsPath,
+        lasso: {
+          outputDir
+        }
       }
     )
   })
@@ -90,6 +99,34 @@ describe('HMLS creation', function () {
       function (err, response, body) {
         expect(err).to.be.null
         body.should.equal('info')
+        done()
+      }
+    )
+  })
+
+  it('/basicTemplate endpoint should exist and return "1"', function (done) {
+    request(
+      {
+        uri: 'http://localhost:8993/basicTemplate',
+        method: 'get'
+      },
+      function (err, response, body) {
+        expect(err).to.be.null
+        body.should.equal('<p>1</p>')
+        done()
+      }
+    )
+  })
+
+  it('/lassoTemplate endpoint should exist and 200', function (done) {
+    request(
+      {
+        uri: 'http://localhost:8993/lassoTemplate',
+        method: 'get'
+      },
+      function (err, response, body) {
+        expect(err).to.be.null
+        response.statusCode.should.equal(200)
         done()
       }
     )
@@ -173,3 +210,4 @@ describe('HMLS start', function () {
     vc.server.stop()
   })
 })
+

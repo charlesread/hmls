@@ -32,8 +32,6 @@
   "author": "Charles Read",
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "bluebird-co": "^2.2.0",
     "colors": "^1.1.2",
     "copy-dir": "^0.3.0",
     "debug": "^3.1.0",
