@@ -120,7 +120,7 @@ First create a project and install `HMLS` globally:
  
 `npm init`
  
-`npm install --save hmls lasso`
+`npm install --save hmls @lasso/marko-taglib` (see [#1](https://github.com/charlesread/hmls/issues/1))
 
 `npm install --global hmls`
 
