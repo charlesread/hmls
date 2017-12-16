@@ -61,7 +61,7 @@ Express is bloated and too intricate.
 
 ## Change Log
 
-* 2017-12-16 - As of v2.x `HMLS` is fully compatible with Hapi v17.x and `async/awai1`.
+* 2017-12-16 - As of v2.x `HMLS` is fully compatible with Hapi v17.x and `async/await`.
 
 ## Installation
  
@@ -71,7 +71,7 @@ Express is bloated and too intricate.
  
 `npm init`
  
-`npm install --save hmls lasso` (see [#1](https://github.com/charlesread/hmls/issues/1))
+`npm install --save hmls @lasso/marko-taglib` (see [#1](https://github.com/charlesread/hmls/issues/1))
  
 Then make a few files:
 
