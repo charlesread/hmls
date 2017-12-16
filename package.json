@@ -32,6 +32,7 @@
   "author": "Charles Read",
   "license": "ISC",
   "dependencies": {
+    "@lasso/marko-taglib": "^1.0.8",
     "colors": "^1.1.2",
     "copy-dir": "^0.3.0",
     "debug": "^3.1.0",

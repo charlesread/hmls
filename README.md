@@ -18,14 +18,15 @@ Express is bloated and too intricate.
 
 <!-- toc -->
 
+- [Change Log](#change-log)
 - [Installation](#installation)
   * [index.js](#indexjs)
   * [routes/index.js](#routesindexjs)
 - [Scaffolding](#scaffolding)
 - [Methods, Attributes, and Options](#methods-attributes-and-options)
   * [`new HMLS([options])`](#new-hmlsoptions)
-  * [`hmls.init()`](#hmlsinit)
-  * [`hmls.start()`](#hmlsstart)
+  * [`async hmls.init()`](#async-hmlsinit)
+  * [`async hmls.start()`](#async-hmlsstart)
   * [`hmls.server`](#hmlsserver)
   * [`hmls.lasso`](#hmlslasso)
   * [`hmls.io`](#hmlsio)
@@ -57,6 +58,10 @@ Express is bloated and too intricate.
     + [pages/slash/lib.js](#pagesslashlibjs)
 
 <!-- tocstop -->
+
+## Change Log
+
+* 2017-12-16 - As of v2.x `HMLS` is fully compatible with Hapi v17.x and `async/awai1`.
 
 ## Installation
  
@@ -95,8 +100,8 @@ vc.start()
 module.exports = {
   method: 'get',
   path: '/',
-  handler: function (req, reply) {
-    reply('Welcome to the home page!')
+  handler: async function (req, h) {
+    return 'Welcome to the home page!'
   }
 }
 ```
@@ -148,13 +153,13 @@ Instantiates a new `hmls` object.  `options` has the following defaults:
  }
 ```
 
-* `server` - this object will be passed _directly_ to `hapi`'s `server.connection()` method.  See https://hapijs.com/api for full options.
+* `server` - this object will be passed _directly_ to `hapi`'s constructor.  See https://hapijs.com/api for full options.
 * `lasso` - this object will be passed _directly_ to `lasso`'s `lasso.configure()` method.  `lasso.outpurDir` must be set, at a minimum, this specifies the folder where `lasso` will output bundled resources.  It defaults to `/static`.  `HMLS` will automatically use `inert` to serve this folder.
 * `routesPath` - `HMLS` will search this folder for `hapi` routes. More precisely said, it will add each file's exported object to `hapi`'s route table.  _ALL_ files in this folder must export an object, or an array of objects that are `hapi` routes.
 * `assetsPath` - `HMLS` will serve all files in this folder at `/assets`, useful for static resources like images.
 * `ioPath` - `HMLS` wires up `socket.io`, any file in this folder is expected to export a function with the signature `function(io) {}`, where `io` is the `socket.io` instance.
 
-### `hmls.init()`
+### `async hmls.init()`
 
 Returns: `Promise`
 
@@ -164,7 +169,7 @@ If this is not called explicitly it is called in `hmls.start()`.
 
 If you want to do things to the individual components prior to starting `hapi` (like manually adding routes to `hapi`) this is useful.
 
-### `hmls.start()`
+### `async hmls.start()`
 
 Returns: `Promise`
 
@@ -172,7 +177,7 @@ Starts the `hapi` server, will invoke `hmls.init()` if it has not already been i
 
 ### `hmls.server`
 
-The `hapi` server.
+The `hapi` server object.
 
 ### `hmls.lasso`
 
@@ -186,11 +191,11 @@ The `socket.io` instance.
 
 ### initialized
 
-Emitted after `hmls.init()` has completed.
+Emitted after `async hmls.init()` has completed.
 
 ### started
 
-Emitted after `hmls.start()` has completed.  Useful for things like rigging `browser-refresh` or other things that require that all of the "initial work" has been done and the app is ready to go.
+Emitted after `async hmls.start()` has completed.  Useful for things like rigging `browser-refresh` or other things that require that all of the "initial work" has been done and the app is ready to go.
 
 ## Structure and Architecture
  
@@ -220,8 +225,8 @@ An example of a trivial route file:
 module.exports = [{
   method: 'get',
   path: '/',
-  handler: function (req, reply) {
-    reply('I get rendered to the browser!')
+  handler: async function (req, h) {
+    return 'I get rendered to the browser!'
   }
 }]
 ```
@@ -285,13 +290,13 @@ vc.start()
 module.exports = [{
   method: 'get',
   path: '/',
-  handler: function (req, reply) {
+  handler: async function (req, h) {
     const page = require('~/pages/slash/index.marko')
-    reply(page.stream(
+    return page.stream(
       {
         now: new Date()
       }
-    ))
+    )
   }
 }]
 ```
@@ -327,13 +332,13 @@ vc.start()
 module.exports = [{
   method: 'get',
   path: '/',
-  handler: function (req, reply) {
+  handler: async function (req, h) {
     const page = require('~/pages/slash/index.marko')
-    reply(page.stream(
+    return page.stream(
       {
         now: new Date()
       }
-    ))
+    )
   }
 }]
 ```

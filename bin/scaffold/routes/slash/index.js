@@ -3,12 +3,12 @@
 module.exports = {
   method: 'get',
   path: '/',
-  handler: function (req, reply) {
+  handler: async function (req, h) {
     const page = require('~/pages/slash/index.marko')
-    reply(page.stream(
+    return page.stream(
       {
         now: new Date()
       }
-    ))
+    )
   }
 }
