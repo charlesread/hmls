@@ -7,9 +7,9 @@ const request = require('request')
 const HMLS = require('~/index')
 
 process.on('unhandledRejection', error => {
-  console.error('unhandledRejection', error.message);
+  console.error('unhandledRejection', error.message)
   console.error(error.stack)
-});
+})
 
 describe('HMLS creation', function () {
   let vc
@@ -215,4 +215,3 @@ describe('HMLS start', function () {
     vc.server.stop()
   })
 })
-

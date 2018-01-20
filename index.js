@@ -11,7 +11,20 @@ const fs = require('fs')
 
 const config = require('~/config')
 
-async function registerInertRoutes () {
+function HMLS (options) {
+  this._options = deepAssign({}, config.options, options)
+  if (!this._options.lasso || !this._options.lasso.outputDir) {
+    throw config.errors.options.lasso
+  }
+  this.server = Hapi.server(this._options.server)
+  this.lasso = lasso
+  this.initialized = false
+  this.started = false
+}
+
+HMLS.prototype = Object.create(EventEmitter.prototype)
+HMLS.prototype.constructor = HMLS
+HMLS.prototype.registerInertRoutes = async function () {
   debug('5 - registering inert')
   await this.server.register(require('inert'))
   debug('6 - static folder, start')
@@ -44,7 +57,7 @@ async function registerInertRoutes () {
   }
 }
 
-function registerRoutes () {
+HMLS.prototype.registerRoutes = function () {
   debug('10 - registering routes')
   return new Promise((resolve, reject) => {
     try {
@@ -75,7 +88,7 @@ function registerRoutes () {
   })
 }
 
-function registerIoSockets () {
+HMLS.prototype.registerIoSockets = function () {
   debug('11 - registering sockets')
   return new Promise((resolve, reject) => {
     try {
@@ -102,51 +115,35 @@ function registerIoSockets () {
     })
   })
 }
-
-function HMLS (options) {
-  this._options = deepAssign({}, config.options, options)
-  if (!this._options.lasso || !this._options.lasso.outputDir) {
-    throw config.errors.options.lasso
-  }
-  this.server = Hapi.server(this._options.server)
-  this.lasso = lasso
-  this.initialized = false
-  this.started = false
-}
-
-HMLS.prototype = Object.create(EventEmitter.prototype)
-HMLS.prototype.constructor = HMLS
 HMLS.prototype.init = async function () {
   debug('1 - starting init()')
-  const that = this
   require('marko/node-require').install()
   require('marko/compiler').defaultOptions.writeToDisk = false
   debug('2 - server.connection()')
   debug('3 - rigging socket.io')
-  that.io = require('socket.io')(that.server.listener)
+  this.io = require('socket.io')(this.server.listener)
   debug('4 - configuring lasso')
-  that.lasso.configure(that._options.lasso)
-  that.initialized = true
-  that.emit('initialized')
+  this.lasso.configure(this._options.lasso)
+  this.initialized = true
+  this.emit('initialized')
   debug('12 - returning from init()')
-  return that
+  return this
 }
 
 HMLS.prototype.start = async function () {
-  let that = this
   debug('13 - starting start()')
-  if (that.started === true) {
+  if (this.started === true) {
     throw new Error('already started')
   }
-  if (!that.initialized) {
-    await that.init()
+  if (!this.initialized) {
+    await this.init()
   }
-  await registerInertRoutes.call(that)
-  await registerRoutes.call(that)
-  await registerIoSockets.call(that)
-  await that.server.start()
-  that.started = true
-  that.emit('started')
+  await this.registerInertRoutes()
+  await this.registerRoutes()
+  await this.registerIoSockets()
+  await this.server.start()
+  this.started = true
+  this.emit('started')
   debug('14 - resolving from start()')
 }
 
