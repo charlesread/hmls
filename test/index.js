@@ -57,16 +57,21 @@ describe('HMLS creation', function () {
     vc.init()
   })
 
-  it('should be able to add route', function () {
-    vc.server.route(
-      {
-        method: 'get',
-        path: '/',
-        handler: function (req, h) {
-          return '/'
+  it('should be able to add route', function (done) {
+    try {
+      vc.server.route(
+        {
+          method: 'get',
+          path: '/',
+          handler: function (req, h) {
+            return '/'
+          }
         }
-      }
-    )
+      )
+      done()
+    } catch (err) {
+      throw err
+    }
   })
 
   it('vc should start and emit `started`', function (done) {

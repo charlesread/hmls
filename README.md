@@ -114,15 +114,15 @@ Then `node index.js` and visit http://localhost:8080 to see your home page.
 
 First create a project and install `HMLS` globally:
 
-`mkdir <project>`
- 
-`cd <project>`
- 
-`npm init`
- 
-`npm install --save hmls @lasso/marko-taglib` (see [#1](https://github.com/charlesread/hmls/issues/1))
+`$ mkdir <project>`
 
-`npm install --global hmls`
+`$ cd <project>`
+ 
+`$ npm init`
+ 
+`$ npm install --save hmls @lasso/marko-taglib` (see [#1](https://github.com/charlesread/hmls/issues/1))
+
+`$ npm install --global hmls`
 
 Then:
 
