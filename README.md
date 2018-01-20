@@ -1,3 +1,4 @@
+
 [![Build Status](https://travis-ci.org/charlesread/hmls.svg?branch=master)](https://travis-ci.org/charlesread/hmls)
 [![Dependencies](https://david-dm.org/charlesread/hmls.svg)](https://david-dm.org/charlesread/hmls)
 [![Coverage Status](https://coveralls.io/repos/github/charlesread/hmls/badge.svg?branch=master)](https://coveralls.io/github/charlesread/hmls?branch=master)
@@ -71,7 +72,7 @@ Express is bloated and too intricate.
  
 `npm init`
  
-`npm install --save hmls @lasso/marko-taglib` (see [#1](https://github.com/charlesread/hmls/issues/1))
+`npm install --save hmls`
  
 Then make a few files:
 
@@ -120,7 +121,7 @@ First create a project and install `HMLS` globally:
  
 `$ npm init`
  
-`$ npm install --save hmls @lasso/marko-taglib` (see [#1](https://github.com/charlesread/hmls/issues/1))
+`$ npm install --save hmls`
 
 `$ npm install --global hmls`
 
@@ -305,8 +306,6 @@ module.exports = [{
 
 You can use `lasso`'s manifest file (`browser.json`) and its taglib in `marko` files to bundle assets.
 
-**NOTE: Be aware of issue [#1](https://github.com/charlesread/hmls/issues/1), it has a simple workaround.**
-
 #### index.js
 
 ```js
@@ -333,12 +332,17 @@ module.exports = [{
   method: 'get',
   path: '/',
   handler: async function (req, h) {
-    const page = require('~/pages/slash/index.marko')
-    return page.stream(
-      {
-        now: new Date()
-      }
-    )
+    try {
+      const page = require('~/pages/slash/index.marko')
+      return page.stream(
+        {
+          now: new Date()
+        }
+      )
+    } catch (err) {
+      console.error(err.message)
+      return err.message
+    }
   }
 }]
 ```
