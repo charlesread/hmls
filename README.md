@@ -24,6 +24,7 @@ Express is bloated and too intricate.
   * [routes/index.js](#routesindexjs)
   * [Too lazy for that noise?](#too-lazy-for-that-noise)
 - [Scaffolding](#scaffolding)
+- [Related Plugins](#related-plugins)
 - [Methods, Attributes, and Options](#methods-attributes-and-options)
   * [`new HMLS([options])`](#new-hmlsoptions)
   * [`async hmls.init()`](#async-hmlsinit)
@@ -140,6 +141,14 @@ Then:
 `$ hmls --scaffold && node index.js`
 
 Simple as that!
+
+## Related Plugins
+
+I've written a few `hapi`-related plugins that I use all the time, mostly for authorization and authentication:
+
+* [hapi-acl-auth](https://www.npmjs.com/package/hapi-acl-auth)
+* [hapi-auth-auth0](https://www.npmjs.com/package/hapi-auth-auth0)
+* [hapi-auth-fb](https://www.npmjs.com/package/hapi-auth-fb)
 
 ## Methods, Attributes, and Options
 
