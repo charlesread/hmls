@@ -1,4 +1,3 @@
-
 [![Build Status](https://travis-ci.org/charlesread/hmls.svg?branch=master)](https://travis-ci.org/charlesread/hmls)
 [![Dependencies](https://david-dm.org/charlesread/hmls.svg)](https://david-dm.org/charlesread/hmls)
 [![Coverage Status](https://coveralls.io/repos/github/charlesread/hmls/badge.svg?branch=master)](https://coveralls.io/github/charlesread/hmls?branch=master)
@@ -23,6 +22,7 @@ Express is bloated and too intricate.
 - [Installation](#installation)
   * [index.js](#indexjs)
   * [routes/index.js](#routesindexjs)
+  * [Too lazy for that noise?](#too-lazy-for-that-noise)
 - [Scaffolding](#scaffolding)
 - [Methods, Attributes, and Options](#methods-attributes-and-options)
   * [`new HMLS([options])`](#new-hmlsoptions)
@@ -85,12 +85,14 @@ const HMLS = require('hmls')
 
 const vc = new HMLS()
 
-vc.on('started', () => {
-  console.log('server started at %s', vc.server.info.uri)
-})
-
-vc.init()
-vc.start()
+!async function () {
+  await vc.init()
+  await vc.start()
+  console.log('server started: %s', vc.server.info.uri)
+}()
+  .catch((err) => {
+    console.error(err.message)
+  })
 ```
  
 ### routes/index.js
@@ -108,6 +110,14 @@ module.exports = {
 ```
 
 Then `node index.js` and visit http://localhost:8080 to see your home page.
+
+### Too lazy for that noise?
+
+Check this out, just a one liner that installs everything and starts your project:
+
+```bash
+$ mkdir my-project && cd my-project && npm i -g hmls && npm init && npm i -S hmls && hmls --scaffold && node index.js
+```
 
 ## Scaffolding
 
