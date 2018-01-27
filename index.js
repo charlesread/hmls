@@ -5,14 +5,14 @@ const Hapi = require('hapi')
 const dir = require('node-dir')
 const lasso = require('lasso')
 const EventEmitter = require('events')
-const deepAssign = require('deep-assign')
+const deepExtend = require('deep-extend')
 const debug = require('debug')('HMLS')
 const fs = require('fs')
 
 const config = require('~/config')
 
-function HMLS (options) {
-  this._options = deepAssign({}, config.options, options)
+function HMLS(options) {
+  this._options = deepExtend({}, config.options, options)
   if (!this._options.lasso || !this._options.lasso.outputDir) {
     throw config.errors.options.lasso
   }
@@ -60,30 +60,38 @@ HMLS.prototype.registerInertRoutes = async function () {
 HMLS.prototype.registerRoutes = function () {
   debug('10 - registering routes')
   return new Promise((resolve, reject) => {
-    try {
-      fs.statSync(this._options.routesPath)
-      debug('10a - this._options.routesPath does exist: %s', this._options.routesPath)
-    } catch (err) {
-      debug('10a - this._options.routesPath does NOT exist: %s', this._options.routesPath)
-      return resolve()
+    let routesPathArray
+    if (Array.isArray(this._options.routesPath)) {
+      routesPathArray = this._options.routesPath
+    } else {
+      routesPathArray = [this._options.routesPath]
     }
-    if (this._options.routesPath) {
-      dir.files(this._options.routesPath, (err, files) => {
-        if (err) {
-          return reject(err)
-        }
-        for (let i = 0; i < files.length; i++) {
-          debug(' registering route at %s', files[i])
-          try {
-            this.server.route(require(files[i]))
-          } catch (err) {
-            console.error(err.message)
+    for (let k = 0; k < routesPathArray.length; k++) {
+      try {
+        fs.statSync(routesPathArray[k])
+        debug('10a - route file does exist: %s', routesPathArray[k])
+        dir.files(routesPathArray[k], (err, files) => {
+          if (err) {
+            return reject(err)
           }
-          if (i === files.length - 1) {
-            resolve()
+          debug('10 - files for %s: %j', routesPathArray[k], files)
+          for (let i = 0; i < files.length; i++) {
+            debug(' registering route at %s', files[i])
+            try {
+              this.server.route(require(files[i]))
+            } catch (err) {
+              console.error(err.message)
+            }
+            if (i === files.length - 1 && k === routesPathArray.length - 1) {
+              debug('10 - done registering routes')
+              resolve()
+            }
           }
-        }
-      })
+        })
+      } catch (err) {
+        debug('10a - route file does NOT exist: %s', routesPathArray[k])
+        return resolve()
+      }
     }
   })
 }

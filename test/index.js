@@ -74,6 +74,82 @@ describe('HMLS creation', function () {
     }
   })
 
+  it('routesPath should be able to be a string', function (done) {
+    try {
+      const vcX = new HMLS(
+        {
+          server: {
+            port: 8993
+          },
+          routesPath: path.join(__dirname, '..', 'test-files', 'someOtherRoutes'),
+          assetsPath,
+          lasso: {
+            outputDir
+          }
+        }
+      )
+      vcX.start()
+        .then(function () {
+          request(
+            {
+              uri: 'http://localhost:8993/infoSomeOtherRoutes',
+              method: 'get'
+            },
+            function (err, response, body) {
+              expect(err).to.be.null
+              body.should.equal('infoSomeOtherRoutes')
+              vcX.server.stop()
+                .then(function () {
+                  done()
+                })
+            }
+          )
+        })
+
+    } catch (err) {
+      vc.server.stop()
+      throw err
+    }
+  })
+
+  it('routesPath should be able to be an array', function (done) {
+    try {
+      const vcX = new HMLS(
+        {
+          server: {
+            port: 8993
+          },
+          routesPath: [routesPath, path.join(__dirname, '..', 'test-files', 'someOtherRoutes')],
+          assetsPath,
+          lasso: {
+            outputDir
+          }
+        }
+      )
+      vcX.start()
+        .then(function () {
+          request(
+            {
+              uri: 'http://localhost:8993/infoSomeOtherRoutes',
+              method: 'get'
+            },
+            function (err, response, body) {
+              expect(err).to.be.null
+              body.should.equal('infoSomeOtherRoutes')
+              vcX.server.stop()
+                .then(function () {
+                  done()
+                })
+            }
+          )
+        })
+
+    } catch (err) {
+      vc.server.stop()
+      throw err
+    }
+  })
+
   it('vc should start and emit `started`', function (done) {
     vc.on('started', function () {
       done()
@@ -205,7 +281,6 @@ describe('HMLS start', function () {
         return vc.start()
       })
       .catch((err) => {
-      // console.log(err)
         err.message.should.equal('already started')
         done()
       })
