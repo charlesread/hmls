@@ -402,7 +402,7 @@ module.exports = [{
     },
     "./lib1.js",
     "./lib2.js",
-    variables.css
+    "./style.css"
   ]
 }
 ```
