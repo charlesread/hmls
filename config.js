@@ -2,7 +2,9 @@
 
 const path = require('path')
 
-module.exports = {
+const deepExtend = require('deep-extend')
+
+let _config = {
   options: {
     server: {
       host: 'localhost',
@@ -22,4 +24,8 @@ module.exports = {
       lasso: new Error('could not find `lasso` or `lasso.outputDir` attributes in `options`, need `lasso.outputDir` at a minimum')
     }
   }
+}
+
+module.exports = function (options) {
+  return deepExtend({}, _config, {options})
 }

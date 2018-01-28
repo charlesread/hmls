@@ -5,14 +5,15 @@ const Hapi = require('hapi')
 const dir = require('node-dir')
 const lasso = require('lasso')
 const EventEmitter = require('events')
-const deepExtend = require('deep-extend')
 const debug = require('debug')('HMLS')
 const fs = require('fs')
 
-const config = require('~/config')
+const _config = require('~/config')
+let config
 
 function HMLS(options) {
-  this._options = deepExtend({}, config.options, options)
+  config = _config(options)
+  this._options = config.options
   if (!this._options.lasso || !this._options.lasso.outputDir) {
     throw config.errors.options.lasso
   }
