@@ -38,7 +38,11 @@ HMLS gives you, with _zero_ configuration:
   * [`hmls.lasso`](#hmlslasso)
   * [`hmls.io`](#hmlsio)
 - [Events](#events)
+  * [willInitialize](#willinitialize)
   * [initialized](#initialized)
+  * [willRegisterRoutes](#willregisterroutes)
+  * [routesRegistered](#routesregistered)
+  * [willStart](#willstart)
   * [started](#started)
 - [Structure and Architecture](#structure-and-architecture)
   * [Project Structure](#project-structure)
@@ -214,9 +218,27 @@ The `socket.io` instance.
 
 ## Events
 
+`HMLS` emits several events, they are emitted in this order:
+
+### willInitialize
+
+Emitted when `async hmls.init()` is about to start.
+
 ### initialized
 
 Emitted after `async hmls.init()` has completed.
+
+### willRegisterRoutes
+
+Emitted right before routes in `routesPath` are added.
+
+### routesRegistered
+
+Emitted after all routes are added.
+
+### willStart
+
+Emitted just before `async hmls.start()` starts.
 
 ### started
 
@@ -291,12 +313,14 @@ const HMLS = require('hmls')
 
 const vc = new HMLS()
 
-vc.on('started', () => {
-  console.log('server started at %s', vc.server.info.uri)
-})
-
-vc.init()
-vc.start()
+!async function () {
+  await vc.init()
+  await vc.start()
+  console.log('server started: %s', vc.server.info.uri)
+}()
+  .catch((err) => {
+    console.error(err.message)
+  })
 ```
 
 #### pages/slash/index.marko
@@ -343,8 +367,10 @@ vc.on('started', () => {
   console.log('server started at %s', vc.server.info.uri)
 })
 
-vc.init()
 vc.start()
+  .catch(function(err) {
+    console.error(err.message)
+  })
 ```
 
 #### routes/slash/index.js

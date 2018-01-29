@@ -11,7 +11,7 @@ const fs = require('fs')
 const _config = require('~/config')
 let config
 
-function HMLS(options) {
+function HMLS (options) {
   config = _config(options)
   this._options = config.options
   if (!this._options.lasso || !this._options.lasso.outputDir) {
@@ -59,14 +59,10 @@ HMLS.prototype.registerInertRoutes = async function () {
 }
 
 HMLS.prototype.registerRoutes = function () {
+  this.emit('willRegisterRoutes')
   debug('10 - registering routes')
   return new Promise((resolve, reject) => {
-    let routesPathArray
-    if (Array.isArray(this._options.routesPath)) {
-      routesPathArray = this._options.routesPath
-    } else {
-      routesPathArray = [this._options.routesPath]
-    }
+    const routesPathArray = this._options.routesPath
     for (let k = 0; k < routesPathArray.length; k++) {
       try {
         fs.statSync(routesPathArray[k])
@@ -85,6 +81,7 @@ HMLS.prototype.registerRoutes = function () {
             }
             if (i === files.length - 1 && k === routesPathArray.length - 1) {
               debug('10 - done registering routes')
+              this.emit('routesRegistered')
               resolve()
             }
           }
@@ -125,6 +122,7 @@ HMLS.prototype.registerIoSockets = function () {
   })
 }
 HMLS.prototype.init = async function () {
+  this.emit('willInitialize')
   debug('1 - starting init()')
   require('marko/node-require').install()
   require('marko/compiler').defaultOptions.writeToDisk = false
@@ -140,6 +138,7 @@ HMLS.prototype.init = async function () {
 }
 
 HMLS.prototype.start = async function () {
+  this.emit('willStart')
   debug('13 - starting start()')
   if (this.started === true) {
     throw new Error('already started')

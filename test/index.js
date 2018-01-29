@@ -37,7 +37,7 @@ describe('HMLS creation', function () {
   })
 
   it('routesPath should be correct', function () {
-    vc._options.routesPath.should.equal(routesPath)
+    vc._options.routesPath[0].should.equal(routesPath)
   })
 
   it('assetsPath should be correct', function () {
@@ -105,7 +105,6 @@ describe('HMLS creation', function () {
             }
           )
         })
-
     } catch (err) {
       vc.server.stop()
       throw err
@@ -136,14 +135,23 @@ describe('HMLS creation', function () {
             function (err, response, body) {
               expect(err).to.be.null
               body.should.equal('infoSomeOtherRoutes')
-              vcX.server.stop()
-                .then(function () {
-                  done()
-                })
+              request(
+                {
+                  uri: 'http://localhost:8993/info',
+                  method: 'get'
+                },
+                function (err, response, body) {
+                  expect(err).to.be.null
+                  body.should.equal('info')
+                  vcX.server.stop()
+                    .then(function () {
+                      done()
+                    })
+                }
+              )
             }
           )
         })
-
     } catch (err) {
       vc.server.stop()
       throw err

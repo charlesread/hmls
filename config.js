@@ -3,6 +3,9 @@
 const path = require('path')
 
 const deepExtend = require('deep-extend')
+const type = require('type-detect')
+
+const projectRoot = path.join(__dirname, '..', '..')
 
 let _config = {
   options: {
@@ -11,13 +14,13 @@ let _config = {
       port: '8080'
     },
     lasso: {
-      outputDir: path.join(__dirname, '..', '..', 'static'),
+      outputDir: path.join(projectRoot, 'static'),
       plugins: ['lasso-marko', 'lasso-less']
     },
-    projectRoot: path.join(__dirname, '..', '..'),
-    routesPath: [path.join(__dirname, '..', '..', 'routes')],
-    assetsPath: path.join(__dirname, '..', '..', 'assets'),
-    ioPath: path.join(__dirname, '..', '..', 'io')
+    projectRoot,
+    routesPath: [path.join(projectRoot, 'routes')],
+    assetsPath: path.join(projectRoot, 'assets'),
+    ioPath: path.join(projectRoot, 'io')
   },
   errors: {
     options: {
@@ -27,5 +30,8 @@ let _config = {
 }
 
 module.exports = function (options) {
+  if (type(options.routesPath) === 'string') {
+    options.routesPath = [options.routesPath]
+  }
   return deepExtend({}, _config, {options})
 }
