@@ -19,7 +19,7 @@ let _config = {
     },
     projectRoot,
     routesPath: [path.join(projectRoot, 'routes')],
-    assetsPath: path.join(projectRoot, 'assets'),
+    assetsPath: [path.join(projectRoot, 'assets')],
     ioPath: path.join(projectRoot, 'io')
   },
   errors: {

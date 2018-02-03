@@ -14,7 +14,7 @@ process.on('unhandledRejection', error => {
 describe('HMLS creation', function () {
   let vc
   const routesPath = path.join(__dirname, '..', 'test-files', 'routes')
-  const assetsPath = path.join(__dirname, '..', 'test-files', 'assets')
+  const assetsPath = [path.join(__dirname, '..', 'test-files', 'assets'), path.join(__dirname, '..', 'test-files', 'moreAssets')]
   const outputDir = path.join(__dirname, '..', 'test-files', 'static')
 
   before(function () {
@@ -37,11 +37,11 @@ describe('HMLS creation', function () {
   })
 
   it('routesPath should be correct', function () {
-    vc._options.routesPath[0].should.equal(routesPath)
+    vc._options.routesPath.should.eql([routesPath])
   })
 
   it('assetsPath should be correct', function () {
-    vc._options.assetsPath.should.equal(assetsPath)
+    vc._options.assetsPath.should.eql(assetsPath)
   })
 
   it('vc should have server and lasso properties', function () {
@@ -231,6 +231,30 @@ describe('HMLS creation', function () {
         expect(err).to.be.null
         response.statusCode.should.equal(200)
         done()
+      }
+    )
+  })
+
+  it('/assets/me.jpg endpoint should exist and return 200', function (done) {
+    request(
+      {
+        uri: 'http://localhost:8993/assets/me.jpg',
+        method: 'get'
+      },
+      function (err, response, body) {
+        expect(err).to.be.null
+        response.statusCode.should.equal(200)
+        request(
+          {
+            uri: 'http://localhost:8993/assets/linux.png',
+            method: 'get'
+          },
+          function (err, response, body) {
+            expect(err).to.be.null
+            response.statusCode.should.equal(200)
+            done()
+          }
+        )
       }
     )
   })

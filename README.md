@@ -177,7 +177,7 @@ Instantiates a new `hmls` object.  `options` has the following defaults:
   },
   projectRoot: path.join(__dirname, '..', '..'),
   routesPath: [path.join(__dirname, '..', '..', 'routes')],
-  assetsPath: path.join(__dirname, '..', '..', 'assets'),
+  assetsPath: [path.join(__dirname, '..', '..', 'assets')],
   ioPath: path.join(__dirname, '..', '..', 'io')
  }
 ```
@@ -185,7 +185,7 @@ Instantiates a new `hmls` object.  `options` has the following defaults:
 * `server` - this object will be passed _directly_ to `hapi`'s constructor.  See https://hapijs.com/api for full options.
 * `lasso` - this object will be passed _directly_ to `lasso`'s `lasso.configure()` method.  `lasso.outpurDir` must be set, at a minimum, this specifies the folder where `lasso` will output bundled resources.  It defaults to `/static`.  `HMLS` will automatically use `inert` to serve this folder.
 * `routesPath` - `HMLS` will search this folder, or array of folders, for `hapi` routes. More precisely said, it will add each file's exported object to `hapi`'s route table.  _ALL_ files in this folder must export an object, or an array of objects, that are `hapi` routes.
-* `assetsPath` - `HMLS` will serve all files in this folder at `/assets`, useful for static resources like images.
+* `assetsPath` - `HMLS` will serve all files in this folder, or array of folders, at `/assets`, useful for static resources like images.
 * `ioPath` - `HMLS` wires up `socket.io`, any file in this folder is expected to export a function with the signature `function(io) {}`, where `io` is the `socket.io` instance.
 
 ### `async hmls.init()`
