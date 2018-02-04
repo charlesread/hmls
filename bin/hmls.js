@@ -6,7 +6,7 @@ const colors = require('colors')
 const copydir = require('copy-dir')
 const nopt = require('nopt')
 const noptUsage = require('nopt-usage')
-const path = require("path")
+const path = require('path')
 const knownOpts = {
   "projectRoot": path,
   "scaffold": Boolean,

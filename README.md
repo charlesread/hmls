@@ -123,10 +123,10 @@ Then `node index.js` and visit http://localhost:8080 to see your home page.
 
 ### Too lazy for that noise?
 
-Check this out, just a one liner that installs everything and starts your project:
+Check this out, just a one liner that installs `hmls`, scaffolds out a simple project, and starts it up:
 
 ```bash
-$ mkdir my-project && cd my-project && npm i -g hmls && npm init && npm i -S hmls && hmls --scaffold && node index.js
+$ mkdir my-project && cd my-project && npm init && npm i -S hmls && node node_modules/hmls/bin/hmls.js -s && node index.js
 ```
 
 ## Scaffolding

@@ -36,7 +36,6 @@
     "colors": "^1.1.2",
     "copy-dir": "^0.3.0",
     "debug": "^3.1.0",
-    "deep-assign": "^2.0.0",
     "deep-extend": "^0.5.0",
     "hapi": "^17.2.0",
     "inert": "^5.1.0",
@@ -44,13 +43,12 @@
     "lasso-less": "^2.4.7",
     "lasso-marko": "^2.4.0",
     "marko": "^4.7.5",
-    "mkdirp": "^0.5.1",
     "node-dir": "^0.1.17",
     "nopt": "^4.0.1",
     "nopt-usage": "^0.1.0",
     "require-self-ref": "^2.0.1",
     "socket.io": "^2.0.4",
-    "type-detect": "^4.0.7"
+    "type-detect": "^4.0.8"
   },
   "devDependencies": {
     "chai": "^4.1.2",
